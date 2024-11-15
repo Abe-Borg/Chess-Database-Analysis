@@ -1,5 +1,6 @@
 import pandas as pd
 import chess
+from utils import game_settings
 import multiprocessing as mp
 from pathlib import Path
 import numpy as np
@@ -132,8 +133,9 @@ def print_corruption_report(results_df, file_name):
     
     print(f"\n📝 Detailed report saved to {report_file}")
 
+
 def main():
-    pkl_dir = Path('path/to/pickle/files')
+    pkl_dir = game_settings
     
     total_corrupted = 0
     total_games = 0
