@@ -1,0 +1,30 @@
+Winning Percentage Analysis: You can look at the win-loss-draw records of players to determine their relative strengths. 
+This can be done overall, or you can segregate the data by opponents' strengths, game conditions (like time controls), or other factors.
+
+Opening Theory Analysis: Analyze which openings are most commonly used, and how successful they are. 
+You can break this down by player, by skill level, or other factors. This kind of analysis can 
+help determine the effectiveness of different opening strategies.
+
+Piece Value Analysis: By looking at the pieces taken by each player, you can try to quantify how effectively each 
+player is using their pieces. This can also be used to test the traditional piece values 
+(pawn = 1, knight/bishop = 3, rook = 5, queen = 9).
+
+Endgame Analysis: You can look at games that reached an endgame and analyze which players are most successful 
+in these situations. You can break down this analysis by the type of endgame, the material balance, and so on.
+
+Move Quality Analysis: Using a chess engine, you can evaluate the quality of each move in a game. 
+This can help you understand how often players make blunders, make the best move, or make sub-optimal moves.
+
+Performance Rating Analysis: Performance rating is a calculated measure based on the 
+ratings of one's opponents and the results against them. By comparing a player's actual rating 
+with their performance rating, you can identify players who are over-performing or under-performing their ratings.
+
+Game Length Analysis: Analyzing the length of games can give insights into players' playing styles. 
+Some players might prefer longer, strategic battles, while others might excel at shorter, tactical games.
+
+Historical Trend Analysis: By analyzing chess data over time, you can identify trends in 
+popularity and success rates of different openings, strategies, or endgames.
+
+1. after I have formatted all chess data, and then trained the agents on all games, the Q table can be repurposed. 
+I can zero out the values, and then count how many time one of the unique chess moves is played across all games 
+in the db. 
