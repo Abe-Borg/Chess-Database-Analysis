@@ -134,32 +134,29 @@ def print_corruption_report(results_df, file_name):
     print(f"\n📝 Detailed report saved to {report_file}")
 
 
-def main():
-    pkl_dir = game_settings
-    
+def main():    
     total_corrupted = 0
     total_games = 0
+    pkl_file = game_settings.chess_games_filepath_part_1
+
+    print(f"\n📊 Processing begins...")
     
-    for pkl_file in pkl_dir.glob('*.pkl'):
-        print(f"\n📊 Processing {pkl_file}")
-        
-        # Load DataFrame
-        df = pd.read_pickle(pkl_file)
-        total_games += len(df)
-        
-        # Validate games
-        results_df = validate_dataframe_parallel(df)
-        
-        # Print detailed report
-        print_corruption_report(results_df, pkl_file.name)
-        
-        # Update totals
-        total_corrupted += results_df['is_corrupted'].sum()
+    # Load DataFrame
+    chess_data = pd.read_pickle(pkl_file)
+    total_games += len(chess_data)
+    
+    # Validate games
+    results_df = validate_dataframe_parallel(chess_data)
+    
+    # Print detailed report
+    # print_corruption_report(results_df, pkl_file.name)
+    
+    # Update totals
+    total_corrupted += results_df['is_corrupted'].sum()
     
     # Print final summary
     print("\n📑 Final Summary")
     print("=" * 40)
-    print(f"Total files processed: {len(list(pkl_dir.glob('*.pkl')))}")
     print(f"Total games analyzed: {total_games}")
     print(f"Total corrupted games: {total_corrupted}")
     print(f"Overall corruption rate: {(total_corrupted/total_games)*100:.2f}%")
