@@ -42,13 +42,7 @@ def validate_single_game(game_row):
                     continue
                     
                 # Handle special case moves
-                if move_san in ['O-O', 'O-O-O']:  # Castle moves
-                    if move_san == 'O-O':
-                        move = board.parse_san('O-O')
-                    else:
-                        move = board.parse_san('O-O-O')
-                else:
-                    move = board.parse_san(move_san)
+                move = board.parse_san(move_san)
                 
                 # Check if move is legal
                 if move not in board.legal_moves:
