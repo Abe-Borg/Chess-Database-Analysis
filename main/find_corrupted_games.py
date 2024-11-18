@@ -83,7 +83,6 @@ def validate_single_game(game_row):
         'is_corrupted': is_corrupted,
         'error_type': error_type,
         'error_detail': error_detail,
-        'moves_until_error': ' '.join(move_sequence),
         'final_position': board.fen() if not is_corrupted else None
     }
 
@@ -141,7 +140,6 @@ def print_corruption_report(results_df, file_name):
             row['game_id'],
             row['error_type'],
             row['error_detail'],
-            row['moves_until_error'][:50] + "..." if len(row['moves_until_error']) > 50 else row['moves_until_error']
         ])
     
     print(tabulate(
@@ -198,7 +196,6 @@ def main():
             print("\nGame ID:", row['game_id'])
             print("Error Type:", row['error_type'])
             print("Error Detail:", row['error_detail'])
-            print("Moves until error:", row['moves_until_error'])
             print("-" * 40)
 
 if __name__ == '__main__':
