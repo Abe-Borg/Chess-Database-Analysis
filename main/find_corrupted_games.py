@@ -15,42 +15,20 @@ def validate_single_game(game_row):
     move_sequence = []
     
     try:
-        # Extract moves from columns (modified to be more robust)
+        # Extract moves from columns
         moves = []
         max_moves = (game_row['PlyCount'] + 1) // 2
         for i in range(1, max_moves + 1):
             w_col = f'W{i}'
             b_col = f'B{i}'
-            
-            # Check white's move
-            if w_col in game_row and pd.notna(game_row[w_col]):
-                white_move = str(game_row[w_col]).strip()  # Convert to string and strip whitespace
-                if white_move:  # Only append if move isn't empty
-                    moves.append(white_move)
-            
-            # Check black's move
-            if b_col in game_row and pd.notna(game_row[b_col]):
-                black_move = str(game_row[b_col]).strip()  # Convert to string and strip whitespace
-                if black_move:  # Only append if move isn't empty
-                    moves.append(black_move)
+            moves.append(game_row[w_col])
+            moves.append(game_row[b_col])
         
-        # Validate each move with better error handling
+        # Validate each move
         for move_idx, move_san in enumerate(moves, 1):
             try:
-                # Skip empty moves
-                if not move_san or pd.isna(move_san):
-                    continue
-                    
                 # Handle special case moves
-                move = board.parse_san(move_san)
-                
-                # Check if move is legal
-                if move not in board.legal_moves:
-                    is_corrupted = True
-                    error_type = "Illegal move"
-                    error_detail = f"Move {move_idx}: {move_san} is not legal in position\nFEN: {board.fen()}"
-                    break
-                
+                move = board.parse_san(move_san)      
                 move_sequence.append(move_san)
                 board.push(move)
                 
@@ -99,7 +77,7 @@ def validate_dataframe_parallel(df, num_processes=None):
     if num_processes is None:
         num_processes = mp.cpu_count()
         
-    chunk_size = len(df) // (num_processes * 4)
+    chunk_size = max(1, len(df) // (num_processes * 4))
     chunks = [df.iloc[i:i + chunk_size] for i in range(0, len(df), chunk_size)]
     
     with mp.Pool(processes=num_processes) as pool:
