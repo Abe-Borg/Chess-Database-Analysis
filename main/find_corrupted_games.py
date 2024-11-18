@@ -21,14 +21,22 @@ def validate_single_game(game_row):
         for i in range(1, max_moves + 1):
             w_col = f'W{i}'
             b_col = f'B{i}'
-            moves.append(game_row[w_col])
-            moves.append(game_row[b_col])
+            
+            # Only append white's move if it exists and is not NaN
+            if w_col in game_row and pd.notna(game_row[w_col]):
+                moves.append(str(game_row[w_col]).strip())
+                
+            # Only append black's move if it exists and is not NaN
+            if b_col in game_row and pd.notna(game_row[b_col]):
+                moves.append(str(game_row[b_col]).strip())
         
         # Validate each move
         for move_idx, move_san in enumerate(moves, 1):
             try:
-                # Handle special case moves
-                move = board.parse_san(move_san)      
+                if not move_san:  # Skip empty moves
+                    continue
+                    
+                move = board.parse_san(move_san)
                 move_sequence.append(move_san)
                 board.push(move)
                 
@@ -45,11 +53,11 @@ def validate_single_game(game_row):
         
         # Only check move count if no other errors were found
         if not is_corrupted:
-            actual_moves = len([m for m in moves if m and not pd.isna(m)])
-            if actual_moves != game_row['PlyCount']:
+            valid_moves = len(move_sequence)  # Use actual processed moves instead
+            if valid_moves != game_row['PlyCount']:
                 is_corrupted = True
                 error_type = "Move count mismatch"
-                error_detail = f"Expected {game_row['PlyCount']} moves, found {actual_moves}"
+                error_detail = f"Expected {game_row['PlyCount']} moves, found {valid_moves}"
             
     except Exception as e:
         is_corrupted = True
@@ -63,6 +71,7 @@ def validate_single_game(game_row):
         'error_detail': error_detail,
         'final_position': board.fen() if not is_corrupted else None
     }
+
 
 def process_chunk(chunk_df):
     """Process a chunk of games."""
@@ -141,7 +150,7 @@ def main():
 
     print(f"\n📊 Processing begins...")
     chess_data = pd.read_pickle(pkl_file, compression='zip')
-    chess_data = chess_data.head(10000)
+    chess_data = chess_data.head(1000)
     
     # Add some debug info
     print(f"\nDataFrame Info:")
