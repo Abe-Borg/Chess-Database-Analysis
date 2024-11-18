@@ -37,11 +37,13 @@ def clean_chess_dataframe(df):
     
     # Count actual moves and compare with PlyCount
     move_cols_clean = [col for col in df_clean.columns if col.startswith(('W', 'B'))]
-    df_clean['ActualMoveCount'] = len(move_cols_clean)
-    
-    # Flag mismatches
+
+    def count_not_empty_cells(row):
+        return sum(not is_empty(cell) for cell in row)
+
+    df_clean['ActualMoveCount'] = df_clean[move_cols_clean].apply(count_not_empty_cells, axis=1)
     df_clean['MovesMatch'] = df_clean['PlyCount'] == df_clean['ActualMoveCount']
-    
+
     # Print summary
     mismatches = df_clean[~df_clean['MovesMatch']]
     print(f"\nFound {len(mismatches)} games with move count mismatches")
