@@ -143,6 +143,8 @@ def main():
     
     # Load DataFrame
     chess_data = pd.read_pickle(pkl_file)
+    chess_data = chess_data.head(1000)
+
     total_games += len(chess_data)
     
     # Validate games
@@ -150,16 +152,12 @@ def main():
     
     # Print detailed report
     # print_corruption_report(results_df, pkl_file.name)
-    
-    # Update totals
-    total_corrupted += results_df['is_corrupted'].sum()
-    
+        
     # Print final summary
     print("\n📑 Final Summary")
     print("=" * 40)
     print(f"Total games analyzed: {total_games}")
-    print(f"Total corrupted games: {total_corrupted}")
-    print(f"Overall corruption rate: {(total_corrupted/total_games)*100:.2f}%")
+    print(f"Total corrupted games: {results_df['is_corrupted'].sum()}")
 
 if __name__ == '__main__':
     main()
