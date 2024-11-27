@@ -4,11 +4,7 @@ from pathlib import Path
 base_directory = Path(__file__).parent
 pd.set_option('display.max_columns', None)
 
-PRINT_TRAINING_RESULTS = False
-PRINT_STEP_BY_STEP = False
-
-unique_chess_moves_list_path = base_directory / ".." / "unique_chess_moves_list.pkl"
-environ_logger_filepath = base_directory / ".." / "logging" / "environ_logger_file.txt"
+unique_chess_moves_list_path = base_directory / ".." / "chess_data" / "unique_chess_moves_list.pkl"
 
 chess_games_filepath_part_1 = base_directory / ".." / "chess_data" / "chess_games_part_1.pkl"
 chess_games_filepath_part_2 = base_directory / ".." / "chess_data" / "chess_games_part_2.pkl"

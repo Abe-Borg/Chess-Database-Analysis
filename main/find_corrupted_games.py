@@ -1,6 +1,6 @@
 import pandas as pd
 import chess
-from utils import game_settings
+from utils import settings
 import multiprocessing as mp
 from pathlib import Path
 import numpy as np
@@ -72,11 +72,10 @@ def validate_single_game(game_row):
         'final_position': board.fen() if not is_corrupted else None
     }
 
-
 def process_chunk(chunk_df):
     """Process a chunk of games."""
     results = []
-    for idx, row in chunk_df.iterrows():
+    for _, row in chunk_df.iterrows():
         result = validate_single_game(row)
         results.append(result)
     return results
@@ -122,7 +121,7 @@ def print_corruption_report(results_df, file_name):
     print("-" * 80)
     
     corruption_details = []
-    for idx, row in corrupted_df.iterrows():
+    for _, row in corrupted_df.iterrows():
         corruption_details.append([
             row['game_id'],
             row['error_type'],
@@ -144,9 +143,8 @@ def print_corruption_report(results_df, file_name):
     
     print(f"\n📝 Detailed report saved to {report_file}")
 
-
 def main():    
-    pkl_file = game_settings.chess_games_filepath_part_2
+    pkl_file = settings.chess_games_filepath_part_2
 
     print(f"\n📊 Processing begins...")
     chess_data = pd.read_pickle(pkl_file, compression='zip')
@@ -176,9 +174,9 @@ def main():
     if not corrupted_games.empty:
         print("\nError Type Distribution:")
         print(corrupted_games['error_type'].value_counts())
-        
         print("\nSample of corrupted games:")
         sample_size = min(5, len(corrupted_games))
+
         for _, row in corrupted_games.head(sample_size).iterrows():
             print("\nGame ID:", row['game_id'])
             print("Error Type:", row['error_type'])
