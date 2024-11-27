@@ -1,6 +1,6 @@
 import pandas as pd
 import chess
-from utils import settings
+from utils import program_settings
 import multiprocessing as mp
 from pathlib import Path
 import numpy as np
@@ -24,11 +24,11 @@ def validate_single_game(game_row):
             
             # Only append white's move if it exists and is not NaN
             if w_col in game_row and pd.notna(game_row[w_col]):
-                moves.append(str(game_row[w_col]).strip())
+                moves.append(str(game_row[w_col]))
                 
             # Only append black's move if it exists and is not NaN
             if b_col in game_row and pd.notna(game_row[b_col]):
-                moves.append(str(game_row[b_col]).strip())
+                moves.append(str(game_row[b_col]))
         
         # Validate each move
         for move_idx, move_san in enumerate(moves, 1):
@@ -94,57 +94,9 @@ def validate_dataframe_parallel(df, num_processes=None):
     flat_results = [item for sublist in results for item in sublist]
     return pd.DataFrame(flat_results)
 
-def print_corruption_report(results_df, file_name):
-    """Print a detailed report of corrupted games."""
-    corrupted_df = results_df[results_df['is_corrupted']].copy()
-    
-    if len(corrupted_df) == 0:
-        print(f"\n✅ No corrupted games found in {file_name}")
-        return
-        
-    print(f"\n🔍 Corruption Report for {file_name}")
-    print("=" * 80)
-    
-    # Summary statistics
-    print(f"Total games analyzed: {len(results_df)}")
-    print(f"Corrupted games found: {len(corrupted_df)} ({(len(corrupted_df)/len(results_df))*100:.2f}%)")
-    
-    # Error type distribution
-    print("\nError Type Distribution:")
-    print("-" * 40)
-    error_dist = corrupted_df['error_type'].value_counts()
-    for error_type, count in error_dist.items():
-        print(f"{error_type}: {count} games")
-    
-    # Detailed corruption report
-    print("\nDetailed Corruption Report:")
-    print("-" * 80)
-    
-    corruption_details = []
-    for _, row in corrupted_df.iterrows():
-        corruption_details.append([
-            row['game_id'],
-            row['error_type'],
-            row['error_detail'],
-        ])
-    
-    print(tabulate(
-        corruption_details,
-        headers=['Game ID', 'Error Type', 'Error Detail', 'Moves Until Error'],
-        tablefmt='grid'
-    ))
-    
-    # Save detailed report to file
-    report_file = f"{file_name}_corruption_report.txt"
-    with open(report_file, 'w') as f:
-        f.write(f"Corruption Report for {file_name}\n")
-        f.write("=" * 80 + "\n")
-        f.write(tabulate(corruption_details, headers=['Game ID', 'Error Type', 'Error Detail', 'Moves Until Error'], tablefmt='grid'))
-    
-    print(f"\n📝 Detailed report saved to {report_file}")
 
 def main():    
-    pkl_file = settings.chess_games_filepath_part_2
+    pkl_file = program_settings.chess_games_filepath_part_2
 
     print(f"\n📊 Processing begins...")
     chess_data = pd.read_pickle(pkl_file, compression='zip')
